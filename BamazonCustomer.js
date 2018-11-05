@@ -1,11 +1,8 @@
-
+// Package for MySql so that app can connect to database
 let mysql = require("mysql");
+
 // NPM Package || dont forget to npm install !
 let inquirer = require("inquirer");
-
-let Manager = require("./bamazonmanager")
-
-// let employee = new Manager();
 
 // This NPM Package display tables in console
 const cTable = require('console.table');
@@ -35,86 +32,97 @@ connection.connect(function (err) {
 
   if (err) throw err;
 
-  // Show the user the initial set of product they have to choose from
-  // readProducts()
 
-  // run the start function after the connection is made to prompt the user
-  start();
+  // run the start function after the connection is made to prompt the customer
+  customer();
+
 });
 
-function start() {
-  inquirer
-  .prompt([
-    {
-      name: "type",
-      type: "list",
-      message: "Are you a Customer or Manager?",
-      choices:["Customer","Manager"]
-    }])
-    .then(function (answer) {
-      let type = answer.type;
-
-      switch(type) {
-        case "Customer":
-
-        customer();
-
-        break;
-        case "Manager":
-        new Manager();
-        break;
-      }
-
-    });
-
-}
-
-  
+// Function to prompt the user with the available items in stock and ask what they would like to purchase
 function customer() {
 
+  // Run function to show customer products
   readProducts();
 
   connection.query("SELECT * FROM products", function (err, results) {
 
     if (err) throw (err)
 
+
+    // Ask what the user would like to purchase and how many
     inquirer
       .prompt([
         {
           name: "choice",
+
           type: "input",
-          message: "Select an item number to purchase"
-        },
-        {
-          name: "amount",
-          type: "input",
-          message: "How many would you like to buy?"
+
+          message: "Select an item number to purchase",
+
+          validate: function (val) {
+
+            if (isNaN(val) === false && parseInt(val) > 0 && parseInt(val) <= 100) {
+
+                return true;
+
+            }
+
+            return "Please choose a valid ID";
+
         }
+
+        },
+
+        {
+
+          name: "amount",
+
+          type: "input",
+
+          message: "How many would you like to buy?",
+
+          validate: function (val) {
+
+            if (isNaN(val)) {
+
+                return "Please choose a number quantity"
+
+            } else {
+
+                return true
+            }
+
+          }
+        }
+
       ])
+
       .then(function (answer) {
 
 
         //  Selects the specific item the user want to buy and puts the whoel object into a variable
-        let chosenItem = results[answer.choice - 1]
+        let chosenItem = results[answer.choice - 1];
 
         //  Price of the selected item the user would like to purchase stored in a variable
         let itemPrice = chosenItem.price;
 
         // Amount of stock the user would like to purchase stored in a variable
-        let quanitity = answer.amount
+        let quanitity = answer.amount;
 
+
+        // Variable that stores the purchase price for the customer to display later 
         let purchasePrice = parseFloat(itemPrice * quanitity);
 
 
-
+        let currentSales = chosenItem.product_sales;
 
         // pulls the item's primary id out of the stored object
-        let chosenId = chosenItem.item_id
+        let chosenId = chosenItem.item_id;
 
 
 
         //  stores the stored quantity from stock minues the qaunitity the user would like to buy
-        let newquantity = chosenItem.stock_quantity - answer.amount
+        let newquantity = chosenItem.stock_quantity - answer.amount;
 
 
         //  Check to safegaurd that the user cannot buy more prodcuts then stocks
@@ -125,12 +133,13 @@ function customer() {
         } else {
 
           // Functions to update products plugs in chosen id and new quanitity
-          updateProduct(chosenId, newquantity);
+          updateProduct(chosenId, newquantity, purchasePrice, currentSales);
 
           console.log("\n Thank you for your purchase! \n" + "\n Enjoy your " + chosenItem.product_name);
 
           console.log("\n Your total is: $" + purchasePrice);
 
+        
 
         }
 
@@ -143,7 +152,7 @@ function customer() {
       });
 
   })
-}
+};
 
 
 
@@ -163,11 +172,11 @@ function readProducts() {
 
     // connection.end();
   });
-}
+};
 
 
 // Function to update products
-function updateProduct(chosenId, newquantity) {
+function updateProduct(chosenId, newquantity, purchaseTotal, currentSales) {
 
   // Message to the Node user
 
@@ -198,29 +207,72 @@ function updateProduct(chosenId, newquantity) {
 
       // ====// console.table(results) ======//
 
-      // Show updated table
 
-      // readProducts();
+      
+// Calling the function here asks after the purchase has been completed and the products have been updated, avoiding the question showing twice as well.
 
     }
   );
 
+  connection.query("UPDATE products SET ? WHERE ?", [
 
+    //  First Parameter '?'
+   {
+        // updates product sales after the user's purchase
+
+      product_sales: currentSales + purchaseTotal
+    
+    },
+      // Second Parameter '?'
+      {
+        // selects the primary key to update
+      item_id: chosenId
+    
+    }
+], function (err, res) {
+
+    if (err) throw err;
+
+    console.log("product sales updated!");
+
+    again();
 }
 
+);
 
 
+};
+
+// Function to run the customer purchase program again
+function again() {
+  inquirer
+.prompt([
+{
+  name: "again",
+  type: "list",
+  message: "Would you like to make another purchase?",
+  choices:["Yes","No"]
+}
+])
+.then(function(ans) {
+let answer = ans.again;
+
+switch(answer) {
+  case "Yes":
+
+  customer();
 
 
+  break;
 
+  case "No":
 
+  console.log("Have a great Day!")
 
-// // ==== function to calculate price =====
-// function calcPrice(price,quantity) {
+  connection.end();
 
-//   // Calculates the total for the customer
-//   let total = Math.floor(price * quantity);
-  
-//   console.log("Your total will be " + total);
-  
-//   }
+  break;
+}
+});
+
+};
