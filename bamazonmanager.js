@@ -1,12 +1,16 @@
 // NPM Package || dont forget to npm install !
 let mysql = require("mysql");
+
 let inquirer = require("inquirer");
+
 
 // This NPM Package display tables in console
 const cTable = require('console.table');
 
+
 // Divider to split up information if needed
 let divider = console.log("\n \n");
+
 
 // create the connection information for the sql database
 let connection = mysql.createConnection({
@@ -29,17 +33,14 @@ let connection = mysql.createConnection({
 
 });
 
+
 // connect to the mysql server and sql database
 connection.connect(function (err) {
 
 
   if (err) throw err;
 
-  // Show the user the initial set of product they have to choose from
-
-
-
-  // run the start function after the connection is made to prompt the user
+  // run the start function after the connection is made to prompt the Manager
 
 
 ManagerStart();  
@@ -310,6 +311,50 @@ function addStock() {
 };
 
 
+// Function that prompts the manager if they would like to perform another operation
+function again() {
+
+  inquirer
+
+  .prompt([
+
+    {
+        name: "again",
+
+        type: "list",
+
+        message: "Would you like to perform another operation?",
+
+        choices:["Yes","No"]
+
+      }
+
+  ])
+
+  .then(function(ans) {
+
+    let answer = ans.again;
+
+    switch(answer) {
+
+        case "Yes":
+
+        ManagerStart();
+
+        break;
+
+        case "No":
+
+        connection.end();
+
+        break;
+    }
+
+  });
+
+};
+
+
 // Function that updates the database with the new stock || Used in the add stock function
 function updateProduct(chosenId, newquantity) {
 
@@ -352,49 +397,6 @@ function updateProduct(chosenId, newquantity) {
           }
         );
       
-};
-
-// Function that prompts the manager if they would like to perform another operation
-function again() {
-
-  inquirer
-
-  .prompt([
-
-    {
-        name: "again",
-
-        type: "list",
-
-        message: "Would you like to perform another operation?",
-
-        choices:["Yes","No"]
-
-      }
-
-  ])
-
-  .then(function(ans) {
-
-    let answer = ans.again;
-
-    switch(answer) {
-
-        case "Yes":
-
-        ManagerStart();
-
-        break;
-
-        case "No":
-
-        connection.end();
-
-        break;
-    }
-
-  });
-
 };
 
 
