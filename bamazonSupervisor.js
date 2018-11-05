@@ -1,6 +1,8 @@
 // NPM Package || dont forget to npm install !
 let mysql = require("mysql");
+
 let inquirer = require("inquirer");
+
 
 // This NPM Package display tables in console
 const cTable = require('console.table');
@@ -35,7 +37,6 @@ let connection = mysql.createConnection({
 });
 
 
-
 // connect to the mysql server and sql database
 connection.connect(function (err) {
 
@@ -51,7 +52,6 @@ connection.connect(function (err) {
     supervisor();
 
 });
-
 
 
 // Function that displays the operations options to the supervisor

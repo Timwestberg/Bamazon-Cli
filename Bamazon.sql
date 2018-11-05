@@ -10,7 +10,6 @@ use bamazon;
 
 
 -- Creates a table for products to be stored
-
 CREATE TABLE products(
 
 item_id INT NOT NULL AUTO_INCREMENT,
@@ -31,7 +30,6 @@ PRIMARY KEY(item_id)
 -- ==============================================
 
 -- Creates a table for departments and their overhead costs
-
 CREATE TABLE departments (
 
     department_id INT NOT NULL AUTO_INCREMENT,
@@ -46,11 +44,9 @@ CREATE TABLE departments (
 
 
 -- Inserts  products into the table to start the database
-
 INSERT INTO products(product_name,department_name,price,stock_quantity)
 
 -- This way of inserting more than one prodcut is in Activity 06/mysql
-
 VALUES("Iphone 8 plus Case","Technology",25.99,100),
 
 ("Galaxy S8+ Case","Technology",23.00,90),
@@ -77,11 +73,9 @@ VALUES("Iphone 8 plus Case","Technology",25.99,100),
 
 
 -- Inserts departments and over head costs to begin the table
-
 INSERT INTO departments (department_name, over_head_costs)
 
 -- This way of inserting more than one prodcut is in Activity 06/mysql
-
 VALUES ("Technology", 1200), 
 
 ("TV", 600), 

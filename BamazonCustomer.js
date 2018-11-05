@@ -1,11 +1,12 @@
 // Package for MySql so that app can connect to database
 let mysql = require("mysql");
 
+
 // NPM Package || dont forget to npm install !
 let inquirer = require("inquirer");
 
-// This NPM Package display tables in console
 const cTable = require('console.table');
+
 
 // create the connection information for the sql database
 let connection = mysql.createConnection({
@@ -26,6 +27,7 @@ let connection = mysql.createConnection({
   database: "Bamazon"
 });
 
+
 // connect to the mysql server and sql database
 connection.connect(function (err) {
 
@@ -37,6 +39,8 @@ connection.connect(function (err) {
   customer();
 
 });
+
+
 
 // Function to prompt the user with the available items in stock and ask what they would like to purchase
 function customer() {
@@ -155,7 +159,6 @@ function customer() {
 };
 
 
-
 // Function to read the products in stock
 function readProducts() {
 
@@ -242,6 +245,7 @@ function updateProduct(chosenId, newquantity, purchaseTotal, currentSales) {
 
 
 };
+
 
 // Function to run the customer purchase program again
 function again() {
