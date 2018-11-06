@@ -387,8 +387,8 @@ function updateProduct(chosenId, newquantity) {
           ],
 
           function (err, results) {
-      
-          console.log("\n Products have been updated! \n")
+
+
       
             // To debug if table was updated or not
             //  console.table(results) ===
