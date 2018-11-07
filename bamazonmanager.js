@@ -303,7 +303,7 @@ function addStock() {
             divider;
             
             // Asks if the manager would like to perform another operation.
-            again();
+            // again();
           });
 
         });
@@ -384,18 +384,18 @@ function updateProduct(chosenId, newquantity) {
 
             }
 
-          ],
+          ])
 
-          function (err, results) {
+          // function (err, results) {
 
 
       
-            // To debug if table was updated or not
+          //   // To debug if table was updated or not
             //  console.table(results) ===
-          again();
+       again()
       
-          }
-        );
+        //   }
+        // );
       
 };
 
