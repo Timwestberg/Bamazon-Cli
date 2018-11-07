@@ -243,7 +243,7 @@ function newItem() {
 
             divider;
 
-            again();
+            // again();
 
         });
 
